@@ -1,5 +1,6 @@
 import { atom } from "jotai";
-import { FileModel } from "./models";
+import { FileModel, OsType } from "@/models";
+import { type as osType } from "@tauri-apps/plugin-os";
 
 // File list
 export const filesAtom = atom<FileModel[]>([]);
@@ -14,3 +15,4 @@ export const isOnlineAtom = atom<boolean>(
   (get) => get(serverStatusAtom) === "online"
 );
 export const localIpsAtom = atom<string[]>([]);
+export const hostOsAtom = atom<OsType>((_) => osType());
