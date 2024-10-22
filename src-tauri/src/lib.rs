@@ -1,5 +1,6 @@
 mod db;
 mod error;
+mod files;
 mod info;
 
 use info::commands::*;
