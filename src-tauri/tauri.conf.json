@@ -13,8 +13,12 @@
     "windows": [
       {
         "title": "filey",
-        "width": 800,
-        "height": 600
+        "width": 421.58,
+        "height": 890,
+        "minWidth": 421.58,
+        "minHeight": 890,
+        "resizable": true,
+        "fullscreen": false
       }
     ],
     "security": {
