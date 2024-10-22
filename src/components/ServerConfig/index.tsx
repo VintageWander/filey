@@ -6,8 +6,8 @@ import {
   isOnlineAtom,
   localIpsAtom,
   serverStatusAtom,
-} from "../../store";
-import { capitalLetter } from "../../utils";
+} from "@/store";
+import { capitalLetter } from "@/utils";
 import { FaWifi } from "react-icons/fa6";
 import { FiCloud, FiCloudOff } from "react-icons/fi";
 import { useEffect } from "react";

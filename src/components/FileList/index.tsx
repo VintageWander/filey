@@ -1,7 +1,7 @@
 import { Button, Group } from "@mantine/core";
 import { useAtom } from "jotai";
 import { FaFileImport, FaArrowsRotate } from "react-icons/fa6";
-import { filesAtom, isLocalAtom } from "../../store";
+import { filesAtom, isLocalAtom } from "@/store";
 import { useEffect, useState } from "react";
 import { useInterval } from "@mantine/hooks";
 import { invoke } from "@tauri-apps/api/core";
