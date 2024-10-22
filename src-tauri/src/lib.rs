@@ -3,6 +3,7 @@ mod error;
 mod files;
 mod info;
 
+use files::commands::*;
 use info::commands::*;
 use log::LevelFilter;
 use serde::{Deserialize, Serialize};
@@ -52,7 +53,9 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             database_ready,
             local_ips,
-            check_battery
+            check_battery,
+            reveal,
+            exists,
         ])
         .run(tauri::generate_context!())
         .expect("Application failed to start");
