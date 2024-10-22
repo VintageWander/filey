@@ -1,6 +1,12 @@
 import { Button, Group, Stack, Text } from "@mantine/core";
 import { useAtom } from "jotai";
-import { connectedToAtom, localIpsAtom, serverStatusAtom } from "../../store";
+import {
+  connectedToAtom,
+  isLocalAtom,
+  isOnlineAtom,
+  localIpsAtom,
+  serverStatusAtom,
+} from "../../store";
 import { capitalLetter } from "../../utils";
 import { FaWifi } from "react-icons/fa6";
 import { FiCloud, FiCloudOff } from "react-icons/fi";
@@ -14,13 +20,12 @@ export const ServerConfig = () => {
   const [serverStatus, setServerStatus] = useAtom(serverStatusAtom);
   const [localIps, setLocalIps] = useAtom<string[]>(localIpsAtom);
 
-  const isLocal = connectedTo === "This machine";
-  const isOnline = serverStatus === "online";
+  const [isLocal] = useAtom(isLocalAtom);
+  const [isOnline] = useAtom(isOnlineAtom);
 
   const getLocalIpsInterval = useInterval(
     () => invoke<string[]>("local_ips").then(setLocalIps).catch(error),
-    6000,
-    { autoInvoke: true }
+    6000
   );
 
   useEffect(() => {
