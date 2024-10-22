@@ -1,9 +1,9 @@
 use super::model::{File, Visibility};
 use crate::{error::Error, AppState};
 use std::str::FromStr;
-use tauri::{AppHandle, Manager};
+use tauri::{AppHandle, Manager, State};
 use tauri_plugin_fs::{FsExt, OpenOptions, SafeFilePath};
-use uuid::fmt::Hyphenated;
+use uuid::{fmt::Hyphenated, Uuid};
 
 #[tauri::command]
 pub async fn reveal(path: &str) -> Result<(), Error> {
@@ -147,6 +147,12 @@ pub async fn upsert_files(app_handle: AppHandle, files: Vec<File>) -> Result<Vec
             }
         }
     }
+    /*
+        Query row by id and return
+        Notice the Hyphenated part, this is because we inserted a new row in hyphenated form
+        BUT when we query and parse the model into Rust,
+        we have to convert to Hyphenated in the select statement, or else the Rust model will fail to parse
+    */
     Ok(sqlx::query_as!(
         File,
         r#"
@@ -160,4 +166,14 @@ pub async fn upsert_files(app_handle: AppHandle, files: Vec<File>) -> Result<Vec
     )
     .fetch_all(&state.db)
     .await?)
+}
+
+// Just delete the file by id
+#[tauri::command]
+pub async fn delete_file(state: State<'_, AppState>, id: Uuid) -> Result<(), Error> {
+    let id = id.to_string();
+    sqlx::query!("delete from files where id = $1 returning id", id)
+        .fetch_one(&state.db)
+        .await?;
+    Ok(())
 }

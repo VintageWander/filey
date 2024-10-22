@@ -58,6 +58,7 @@ pub fn run() {
             reveal,
             exists,
             upsert_files,
+            delete_file,
         ])
         .run(tauri::generate_context!())
         .expect("Application failed to start");
