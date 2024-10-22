@@ -1,7 +1,12 @@
 import "@mantine/core/styles.css";
 
 import { MantineProvider } from "@mantine/core";
+import { MenuBar } from "./components/MenuBar";
 
 export default function App() {
-  return <MantineProvider>{/* Your app here */}</MantineProvider>;
+  return (
+    <MantineProvider>
+      <MenuBar />
+    </MantineProvider>
+  );
 }
