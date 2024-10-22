@@ -2,18 +2,19 @@ import { Button, Group, Stack, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import {
   connectedToAtom,
+  hostOsAtom,
   isLocalAtom,
   isOnlineAtom,
   localIpsAtom,
   serverStatusAtom,
 } from "@/store";
-import { capitalLetter } from "@/utils";
-import { FaWifi } from "react-icons/fa6";
+import { capitalLetter, printLocalMachineName } from "@/utils";
 import { FiCloud, FiCloudOff } from "react-icons/fi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import { useInterval } from "@mantine/hooks";
+import { OsIcon } from "@/components/OsIcon";
 
 export const ServerConfig = () => {
   const [connectedTo] = useAtom(connectedToAtom);
@@ -23,15 +24,18 @@ export const ServerConfig = () => {
   const [isLocal] = useAtom(isLocalAtom);
   const [isOnline] = useAtom(isOnlineAtom);
 
+  const [hostOs] = useAtom(hostOsAtom);
+  const [existsBattery, setExistsBattery] = useState<boolean>(true);
+
+  useEffect(() => {
+    invoke<string[]>("local_ips").then(setLocalIps).catch(error);
+    invoke<boolean>("check_battery").then(setExistsBattery).catch(error);
+  }, []);
+
   const getLocalIpsInterval = useInterval(
     () => invoke<string[]>("local_ips").then(setLocalIps).catch(error),
     6000
   );
-
-  useEffect(() => {
-    invoke<string[]>("local_ips").then(setLocalIps).catch(error);
-  }, []);
-
   useEffect(() => {
     const { start, stop } = getLocalIpsInterval;
     start();
@@ -43,8 +47,8 @@ export const ServerConfig = () => {
       {/* Connected to */}
       <Group justify="space-between">
         <Text>Connected to:</Text>
-        <Button color="cyan" leftSection={<FaWifi />}>
-          {connectedTo}
+        <Button color="cyan" leftSection={<OsIcon os={hostOs} />}>
+          {isLocal ? printLocalMachineName(hostOs, existsBattery) : connectedTo}
         </Button>
       </Group>
 
