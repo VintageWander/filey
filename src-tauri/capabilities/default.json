@@ -10,6 +10,7 @@
     "fs:allow-read-file",
     "http:allow-fetch",
     "http:allow-fetch-send",
-    "dialog:allow-open"
+    "dialog:allow-open",
+    "os:allow-os-type"
   ]
 }
