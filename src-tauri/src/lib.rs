@@ -1,6 +1,8 @@
 mod db;
 mod error;
+mod info;
 
+use info::commands::*;
 use log::LevelFilter;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
@@ -16,11 +18,6 @@ pub struct AppState {
 pub struct ServerResponse<T: Serialize> {
     pub message: String,
     pub data: T,
-}
-
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -51,7 +48,11 @@ pub fn run() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![
+            database_ready,
+            local_ips,
+            check_battery
+        ])
         .run(tauri::generate_context!())
         .expect("Application failed to start");
 }
