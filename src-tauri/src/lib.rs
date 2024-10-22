@@ -57,6 +57,7 @@ pub fn run() {
             check_battery,
             reveal,
             exists,
+            upsert_files,
         ])
         .run(tauri::generate_context!())
         .expect("Application failed to start");
