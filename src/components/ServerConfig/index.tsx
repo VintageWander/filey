@@ -7,6 +7,7 @@ import { FiCloud, FiCloudOff } from "react-icons/fi";
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
+import { useInterval } from "@mantine/hooks";
 
 export const ServerConfig = () => {
   const [connectedTo] = useAtom(connectedToAtom);
@@ -16,18 +17,33 @@ export const ServerConfig = () => {
   const isLocal = connectedTo === "This machine";
   const isOnline = serverStatus === "online";
 
+  const getLocalIpsInterval = useInterval(
+    () => invoke<string[]>("local_ips").then(setLocalIps).catch(error),
+    6000,
+    { autoInvoke: true }
+  );
+
   useEffect(() => {
     invoke<string[]>("local_ips").then(setLocalIps).catch(error);
   }, []);
 
+  useEffect(() => {
+    const { start, stop } = getLocalIpsInterval;
+    start();
+    return stop;
+  }, []);
+
   return (
     <Stack>
+      {/* Connected to */}
       <Group justify="space-between">
         <Text>Connected to:</Text>
         <Button color="cyan" leftSection={<FaWifi />}>
           {connectedTo}
         </Button>
       </Group>
+
+      {/* Server status */}
       <Group justify="space-between">
         <Text>Server status:</Text>
         <Button
@@ -38,6 +54,8 @@ export const ServerConfig = () => {
           {capitalLetter(serverStatus)}
         </Button>
       </Group>
+
+      {/* Local ip addresses */}
       <Group justify="space-between">
         <Text>Local IP addresses:</Text>
         {isOnline ? (
