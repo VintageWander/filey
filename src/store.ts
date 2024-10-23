@@ -10,7 +10,7 @@ export const connectedToAtom = atom<string>("This machine");
 export const isLocalAtom = atom<boolean>(
   (get) => get(connectedToAtom) === "This machine"
 );
-export const isExternal = atom<boolean>(
+export const isExternalAtom = atom<boolean>(
   (get) => get(connectedToAtom) !== "This machine"
 );
 

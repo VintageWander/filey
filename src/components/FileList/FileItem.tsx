@@ -3,7 +3,7 @@ import {
   connectedToAtom,
   filesAtom,
   isDesktopAtom,
-  isExternal,
+  isExternalAtom,
   isLocalAtom,
 } from "@/store";
 import {
@@ -35,10 +35,13 @@ export const FileItem = ({
 }: {
   file: FileModel;
 }) => {
+  // ------------------------------ State --------------------------------
+
   const theme = useMantineTheme();
   const [files, setFiles] = useAtom(filesAtom);
   const [connectedTo] = useAtom(connectedToAtom);
   const [isLocal] = useAtom(isLocalAtom);
+  const [isExternal] = useAtom(isExternalAtom);
 
   const [isDesktop] = useAtom(isDesktopAtom);
   const extension = name.split(".").pop()!;
@@ -48,11 +51,13 @@ export const FileItem = ({
     { open: openPreviewModal, close: closePreviewModal },
   ] = useDisclosure(false);
 
+  // ------------------------------ Render --------------------------------
+
   return (
     <>
       {
         /* Image preview modal */
-        isLocal && isDesktop && (
+        isExternal && isDesktop && (
           <Modal
             size="100%"
             opened={previewModalOpened}
