@@ -1,5 +1,11 @@
 import { FileModel } from "@/models";
-import { connectedToAtom, filesAtom, hostOsAtom, isLocalAtom } from "@/store";
+import {
+  connectedToAtom,
+  filesAtom,
+  isDesktopAtom,
+  isExternal,
+  isLocalAtom,
+} from "@/store";
 import {
   Modal,
   Image,
@@ -34,7 +40,7 @@ export const FileItem = ({
   const [connectedTo] = useAtom(connectedToAtom);
   const [isLocal] = useAtom(isLocalAtom);
 
-  const [hostOs] = useAtom(hostOsAtom);
+  const [isDesktop] = useAtom(isDesktopAtom);
   const extension = name.split(".").pop()!;
 
   const [
@@ -46,7 +52,7 @@ export const FileItem = ({
     <>
       {
         /* Image preview modal */
-        isLocal && (
+        isLocal && isDesktop && (
           <Modal
             size="100%"
             opened={previewModalOpened}
@@ -125,86 +131,100 @@ export const FileItem = ({
               </Tooltip>
             )}
 
-            {/* Reveal button */}
-            {/* Disable reveal button since mobile does not support it */}
-            {hostOs === "android" || hostOs === "ios" || !isLocal ? (
-              <></>
-            ) : (
-              <Tooltip
-                label={
-                  <Text size="sm" lineClamp={2}>
-                    {path}
-                  </Text>
-                }
-              >
-                <Button
-                  onClick={() => invoke("reveal", { path }).catch(error)}
-                  variant="subtle"
-                  color={theme.colors.indigo[3]}
-                  px="10px"
-                  leftSection={<FaFolder color={theme.colors.indigo[3]} />}
+            {
+              /*
+                Reveal button
+                Disable reveal button on mobile since it does not support
+              */
+              isLocal && isDesktop && (
+                <Tooltip
+                  label={
+                    <Text size="sm" lineClamp={2}>
+                      {path}
+                    </Text>
+                  }
                 >
-                  Reveal
-                </Button>
-              </Tooltip>
-            )}
-
-            {/* Delete button */}
-            {isLocal && (
-              <Button
-                variant="subtle"
-                color={theme.colors.red[5]}
-                px="10px"
-                onClick={() => {
-                  invoke("delete_file", { id });
-                  setFiles(files.filter((file) => file.id !== id));
-                }}
-                leftSection={<FaTrashAlt color={theme.colors.red[5]} />}
-              >
-                Delete
-              </Button>
-            )}
-
-            {/* Copy link button */}
-            {!isLocal && (
-              <CopyButton
-                value={`http://${connectedTo}:38899/files/${id}`}
-                timeout={1500}
-              >
-                {({ copied, copy }) => (
                   <Button
-                    px="10px"
-                    color={copied ? "teal" : "cyan"}
+                    onClick={() => invoke("reveal", { path }).catch(error)}
                     variant="subtle"
-                    onClick={copy}
-                    leftSection={copied ? <FiCheck /> : <FiCopy />}
+                    color={theme.colors.indigo[3]}
+                    px="10px"
+                    leftSection={<FaFolder color={theme.colors.indigo[3]} />}
                   >
-                    Copy link
+                    Reveal
                   </Button>
-                )}
-              </CopyButton>
-            )}
+                </Tooltip>
+              )
+            }
 
-            {/* Preview button */}
-            {!isLocal && (
-              <Button
-                px="10px"
-                color="indigo"
-                variant="subtle"
-                leftSection={<MdFileOpen />}
-                onClick={() => {
-                  ["gif", "png", "jpg", "jpeg", "svg", "webp", "mp4"].includes(
-                    extension
-                  )
-                    ? openPreviewModal()
-                    : openUrl(`http://${connectedTo}:38899/files/${id}`);
-                }}
-              >
-                Preview
-              </Button>
-            )}
+            {
+              /* Delete button */
+              isLocal && (
+                <Button
+                  variant="subtle"
+                  color={theme.colors.red[5]}
+                  px="10px"
+                  onClick={() => {
+                    invoke("delete_file", { id });
+                    setFiles(files.filter((file) => file.id !== id));
+                  }}
+                  leftSection={<FaTrashAlt color={theme.colors.red[5]} />}
+                >
+                  Delete
+                </Button>
+              )
+            }
 
-            {!isLocal && (
+            {
+              /* Copy link button */
+              isExternal && (
+                <CopyButton
+                  value={`http://${connectedTo}:38899/files/${id}`}
+                  timeout={1500}
+                >
+                  {({ copied, copy }) => (
+                    <Button
+                      px="10px"
+                      color={copied ? "teal" : "cyan"}
+                      variant="subtle"
+                      onClick={copy}
+                      leftSection={copied ? <FiCheck /> : <FiCopy />}
+                    >
+                      Copy link
+                    </Button>
+                  )}
+                </CopyButton>
+              )
+            }
+
+            {
+              /* Preview button */
+              isExternal && (
+                <Button
+                  px="10px"
+                  color="indigo"
+                  variant="subtle"
+                  leftSection={<MdFileOpen />}
+                  onClick={() => {
+                    [
+                      "gif",
+                      "png",
+                      "jpg",
+                      "jpeg",
+                      "svg",
+                      "webp",
+                      "mp4",
+                    ].includes(extension) && isDesktop
+                      ? openPreviewModal()
+                      : openUrl(`http://${connectedTo}:38899/files/${id}`);
+                  }}
+                >
+                  Preview
+                </Button>
+              )
+            }
+
+            {isExternal && (
               <Button
                 px="10px"
                 color="lime"

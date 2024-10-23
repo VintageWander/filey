@@ -10,9 +10,20 @@ export const connectedToAtom = atom<string>("This machine");
 export const isLocalAtom = atom<boolean>(
   (get) => get(connectedToAtom) === "This machine"
 );
+export const isExternal = atom<boolean>(
+  (get) => get(connectedToAtom) !== "This machine"
+);
+
 export const serverStatusAtom = atom<"online" | "offline">("offline");
 export const isOnlineAtom = atom<boolean>(
   (get) => get(serverStatusAtom) === "online"
 );
+
 export const localIpsAtom = atom<string[]>([]);
+
 export const hostOsAtom = atom<OsType>((_) => osType());
+
+export const isDesktopAtom = atom<boolean>((get) => {
+  let os = get(hostOsAtom);
+  return os === "macos" || os === "windows" || os === "linux";
+});

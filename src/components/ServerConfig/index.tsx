@@ -48,7 +48,7 @@ export const ServerConfig = () => {
       <Group justify="space-between">
         <Text>Connected to:</Text>
         <Button color="cyan" leftSection={<OsIcon os={hostOs} />}>
-          {isLocal ? printLocalMachineName(hostOs, existsBattery) : connectedTo}
+          {isLocal ? printLocalMachineName(existsBattery) : connectedTo}
         </Button>
       </Group>
 

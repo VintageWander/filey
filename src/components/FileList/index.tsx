@@ -20,7 +20,9 @@ export const FileList = () => {
 
   const databaseCheckInterval = useInterval(() => {
     invoke<boolean>("database_ready").then(setDatabaseReady).catch(error);
-  }, 2000);
+  }, 1000);
+
+  const refreshInterval = useInterval(() => refresh(), 2000);
 
   useEffect(() => {
     invoke<boolean>("database_ready").then(setDatabaseReady).catch(error);
@@ -33,6 +35,16 @@ export const FileList = () => {
       return stop;
     }
   }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [connectedTo]);
+
+  useEffect(() => {
+    const { start, stop } = refreshInterval;
+    start();
+    return stop;
+  }, [connectedTo]);
 
   // Adding new files to the file list
   // Using tauri's file picker to get file paths
@@ -123,6 +135,7 @@ export const FileList = () => {
         >
           Import file
         </Button>
+
         {
           /* 
             Refresh button, only available when the database is ready 
@@ -138,6 +151,7 @@ export const FileList = () => {
             </Button>
           )
         }
+
         {/* File list, if the database is not ready, shows loading spinner */}
         <Stack w="100%" h="50vh" justify="flex-start" align="center" mt="xs">
           {databaseReady ? (
