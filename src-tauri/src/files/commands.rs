@@ -45,6 +45,25 @@ pub fn exists(app_handle: AppHandle, path: &str) -> bool {
         .is_ok()
 }
 
+// Returns a list of files
+#[tauri::command]
+pub async fn get_files(state: State<'_, AppState>) -> Result<Vec<File>, Error> {
+    let files = sqlx::query_as!(
+        File,
+        r#"
+            select
+                id as "id!: Hyphenated",
+                name,
+                visibility as "visibility!: Visibility",
+                path
+            from files
+        "#
+    )
+    .fetch_all(&state.db)
+    .await?;
+    Ok(files)
+}
+
 /*
     The reason for the upsert is to receive the same array that used to update React state
     React updates the state by using an entirely new state to replace old state.

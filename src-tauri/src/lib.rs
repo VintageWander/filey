@@ -57,6 +57,7 @@ pub fn run() {
             check_battery,
             reveal,
             exists,
+            get_files,
             upsert_files,
             delete_file,
         ])
