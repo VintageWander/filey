@@ -1,8 +1,10 @@
+mod backend;
 mod db;
 mod error;
 mod files;
 mod info;
 
+use backend::commands::*;
 use files::commands::*;
 use info::commands::*;
 use log::LevelFilter;
@@ -13,7 +15,7 @@ use tokio::sync::{oneshot::Sender, Mutex};
 
 pub struct AppState {
     pub db: SqlitePool,
-    pub shutdown_sender: Mutex<Option<Sender<()>>>,
+    pub backend_shutdown_trigger: Mutex<Option<Sender<()>>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -46,7 +48,7 @@ pub fn run() {
 
             app.manage(AppState {
                 db,
-                shutdown_sender: Mutex::new(None),
+                backend_shutdown_trigger: Mutex::new(None),
             });
 
             Ok(())
@@ -60,6 +62,10 @@ pub fn run() {
             get_files,
             upsert_files,
             delete_file,
+            check_peer,
+            get_files_from_peer,
+            start_server,
+            stop_server,
         ])
         .run(tauri::generate_context!())
         .expect("Application failed to start");
