@@ -3,7 +3,6 @@ import { useAtom } from "jotai";
 import { FaFileImport, FaArrowsRotate } from "react-icons/fa6";
 import { connectedToAtom, filesAtom, isLocalAtom } from "@/store";
 import { useEffect, useState } from "react";
-import { useInterval } from "@mantine/hooks";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import { open as openFileDialog } from "@tauri-apps/plugin-dialog";
@@ -12,39 +11,15 @@ import { v4 as UuidV4 } from "uuid";
 import { FileItem } from "./FileItem";
 
 export const FileList = () => {
+  // ------------------------------ State --------------------------------
+
   const [files, setFiles] = useAtom(filesAtom);
   const [databaseReady, setDatabaseReady] = useState<boolean>(false);
 
   const [connectedTo, setConnectedTo] = useAtom(connectedToAtom);
   const [isLocal] = useAtom(isLocalAtom);
 
-  const databaseCheckInterval = useInterval(() => {
-    invoke<boolean>("database_ready").then(setDatabaseReady).catch(error);
-  }, 1000);
-
-  const refreshInterval = useInterval(() => refresh(), 2000);
-
-  useEffect(() => {
-    invoke<boolean>("database_ready").then(setDatabaseReady).catch(error);
-  }, []);
-
-  useEffect(() => {
-    if (!databaseReady) {
-      const { start, stop } = databaseCheckInterval;
-      start();
-      return stop;
-    }
-  }, []);
-
-  useEffect(() => {
-    refresh();
-  }, [connectedTo]);
-
-  useEffect(() => {
-    const { start, stop } = refreshInterval;
-    start();
-    return stop;
-  }, [connectedTo]);
+  // ------------------------------ Utils --------------------------------
 
   // Adding new files to the file list
   // Using tauri's file picker to get file paths
@@ -116,10 +91,39 @@ export const FileList = () => {
         );
       }
     } catch (err: any) {
-      error(err);
       setConnectedTo("This machine");
     }
   };
+
+  // ------------------------------ Effects --------------------------------
+
+  // Checks if the database is ready
+  // Run once every 2 seconds, and stops when the database is ready
+  // This will run at application startup
+  useEffect(() => {
+    if (!databaseReady) {
+      const intervalId = setInterval(() => {
+        invoke("database_ready")
+          .then(() => setDatabaseReady(true))
+          .catch(() => setDatabaseReady(false));
+      }, 2000);
+      return () => clearInterval(intervalId);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Refreshes once every 2 seconds
+    const intervalId = setInterval(() => {
+      refresh();
+    }, 2000);
+    return () => clearInterval(intervalId);
+  }, [connectedTo]);
+
+  useEffect(() => {
+    refresh();
+  }, [connectedTo]);
+
+  // ------------------------------ Render --------------------------------
 
   return (
     <>

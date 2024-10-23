@@ -1,13 +1,11 @@
 import { Peer } from "@/models";
 import { connectedToAtom, hostOsAtom, localIpsAtom } from "@/store";
-import { useInterval } from "@mantine/hooks";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import { Text, Group, Modal, Stack, Button } from "@mantine/core";
 import { OsIcon } from "../OsIcon";
-import { FaArrowsRotate } from "react-icons/fa6";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { printLocalMachineName } from "@/utils";
 
@@ -18,6 +16,8 @@ export const ConnectModal = ({
   opened: boolean;
   closeModal: () => void;
 }) => {
+  // ----------------------------- State ------------------------------------
+
   const [, setConnectedTo] = useAtom(connectedToAtom);
   const [hostOs] = useAtom(hostOsAtom);
   const [peers, setPeers] = useState<Peer[]>([]);
@@ -25,18 +25,9 @@ export const ConnectModal = ({
 
   const [existsBattery, setExistsBattery] = useState<boolean>(true);
 
-  const refreshInterval = useInterval(() => refresh(), 6000);
+  const [seconds, setSeconds] = useState<number>(5);
 
-  const [seconds, setSeconds] = useState(5);
-  const interval = useInterval(
-    () => setSeconds((s) => (s > 0 ? s - 1 : 5)),
-    1000
-  );
-
-  useEffect(() => {
-    interval.start();
-    return interval.stop;
-  }, []);
+  // -------------------------- Utils ----------------------------------
 
   const refresh = () => {
     invoke<string[]>("local_ips")
@@ -63,21 +54,36 @@ export const ConnectModal = ({
             }
           }
         });
+        console.log(peers);
       })
       .catch(error);
   };
 
+  // ---------------------------- Effects ----------------------------------
+
+  // Initial load
   useEffect(() => {
     invoke<boolean>("check_battery").then(setExistsBattery).catch(error);
     refresh();
   }, []);
 
+  // Reloading the second counter
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setSeconds(seconds > 0 ? seconds - 1 : 5);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [seconds]);
+
   // Refreshes every 6 seconds
   useEffect(() => {
-    const { start, stop } = refreshInterval;
-    start();
-    return stop;
+    const intervalId = setInterval(() => {
+      refresh();
+    }, 6000);
+    return () => clearInterval(intervalId);
   }, []);
+
+  // ------------------------------ Render --------------------------------
 
   /* Connection manager modal */
   return (
@@ -104,9 +110,9 @@ export const ConnectModal = ({
             closeModal();
           }}
           leftSection={<OsIcon os={hostOs} />}
-          rightSection={<FaArrowsRotate />}
+          rightSection={<FaArrowAltCircleRight />}
         >
-          <Text>{printLocalMachineName(existsBattery)}</Text>
+          <Text>{printLocalMachineName(hostOs, existsBattery)}</Text>
         </Button>
         {peers.map(({ address, osType }) => (
           <Button
