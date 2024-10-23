@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "\n                select name, path, mime\n                from files\n                where\n                    id = $1\n                and visibility = 'public'\n                limit 1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "name": "name",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "path",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "mime",
+        "ordinal": 2,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "b32b9570f09f7168a2c7d625fe650fd98a465c959e8491a0561174d4a3aa8e72"
+}

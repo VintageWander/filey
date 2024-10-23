@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "\n                        insert into files\n                            (id, name, mime, visibility, path)\n                        values\n                            ($1, $2, $3, $4, $5)\n                        on conflict (id)\n                        do nothing\n                        returning id\n                    ",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 5
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "3dfab1f7cbd50846f14edb0813852baa55aa989fbba0ceb33e8038b929d7789b"
+}

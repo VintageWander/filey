@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "select id from files where id = $1",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "e0e60bb9611f66aa252b555d37e0c239ef6670441e1d4c6ed71aadedaf641e96"
+}

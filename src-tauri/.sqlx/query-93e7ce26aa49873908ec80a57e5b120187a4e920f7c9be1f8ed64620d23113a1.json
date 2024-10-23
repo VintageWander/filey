@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "\n                        update files set\n                            visibility = $1\n                        where id = $2\n                        returning id\n                    ",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "93e7ce26aa49873908ec80a57e5b120187a4e920f7c9be1f8ed64620d23113a1"
+}

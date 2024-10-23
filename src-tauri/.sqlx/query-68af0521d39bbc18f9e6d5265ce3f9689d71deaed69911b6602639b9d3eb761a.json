@@ -1,0 +1,20 @@
+{
+  "db_name": "SQLite",
+  "query": "delete from files where id = $1 returning id",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "68af0521d39bbc18f9e6d5265ce3f9689d71deaed69911b6602639b9d3eb761a"
+}
