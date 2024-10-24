@@ -78,7 +78,7 @@ export const FileList = () => {
   const refresh = async () => {
     try {
       if (isLocal) {
-        let dbFiles = await invoke<FileModel[]>("get_files");
+        const dbFiles = await invoke<FileModel[]>("get_files");
 
         if (dbFiles.length) {
           dbFiles.forEach(({ id, path }) => {
@@ -90,7 +90,7 @@ export const FileList = () => {
         }
         setFiles(dbFiles);
       } else {
-        let externalFiles = await invoke<FileResponse[]>(
+        const externalFiles = await invoke<FileResponse[]>(
           "get_files_from_peer",
           {
             ip: connectedTo,

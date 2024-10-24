@@ -54,11 +54,11 @@ export const ConnectModal = ({
         setLocalIps(dbLocalIp);
         dbLocalIp.forEach((ip) => {
           // 192.168.1.10 -> [192, 168, 1, 10]
-          let splitIp = ip.split(".");
+          const splitIp = ip.split(".");
           // 10
-          let originalEndIp = Number(splitIp.pop());
+          const originalEndIp = Number(splitIp.pop());
           // 192.168.1
-          let baseIp = splitIp.join(".");
+          const baseIp = splitIp.join(".");
           // 192.168.1.1 -> 192.168.1.255
           for (let endIp = 1; endIp <= 255; ++endIp) {
             if (originalEndIp != endIp) {

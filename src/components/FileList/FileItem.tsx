@@ -131,7 +131,7 @@ export const FileItem = ({
                   px="10px"
                   variant={visibility === "public" ? "light" : "subtle"}
                   onClick={() => {
-                    let modifiedFiles: FileModel[] = files.map((file) => {
+                    const modifiedFiles: FileModel[] = files.map((file) => {
                       if (file.id === id) {
                         file.visibility =
                           visibility === "public" ? "private" : "public";
