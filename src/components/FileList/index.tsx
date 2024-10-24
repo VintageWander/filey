@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -65,7 +65,7 @@ export const FileList = () => {
 
     // Makes sure that each file has an unique path
     const uniqueFiles: FileModel[] = mergedFiles.filter(
-      (file, index) => !allPaths.includes(file.path, index + 1)
+      (file, index) => !allPaths.includes(file.path, index + 1),
     );
 
     // Invoke the upsert function in Rust,
@@ -92,9 +92,7 @@ export const FileList = () => {
       } else {
         const externalFiles = await invoke<FileResponse[]>(
           "get_files_from_peer",
-          {
-            ip: connectedTo,
-          }
+          { ip: connectedTo },
         );
 
         setFiles(
@@ -105,7 +103,7 @@ export const FileList = () => {
               visibility: "public",
               path: "Unknown",
             } as FileModel;
-          })
+          }),
         );
       }
     } catch (err: any) {
@@ -159,8 +157,8 @@ export const FileList = () => {
         </Button>
 
         {
-          /* 
-            Refresh button, only available when the database is ready 
+          /*
+            Refresh button, only available when the database is ready
             Triggers a files refetch
           */
           databaseReady && (

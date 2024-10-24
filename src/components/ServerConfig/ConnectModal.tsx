@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -17,7 +17,7 @@
 */
 
 import { Peer } from "@/models";
-import { connectedToAtom, hostOsAtom, localIpsAtom } from "@/store";
+import { connectedToAtom, hostOsAtom, localIpsAtom, peersAtom } from "@/store";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
@@ -38,7 +38,7 @@ export const ConnectModal = ({
 
   const [, setConnectedTo] = useAtom(connectedToAtom);
   const [hostOs] = useAtom(hostOsAtom);
-  const [peers, setPeers] = useState<Peer[]>([]);
+  const [peers, setPeers] = useAtom<Peer[]>(peersAtom);
   const [, setLocalIps] = useAtom(localIpsAtom);
 
   const [existsBattery, setExistsBattery] = useState<boolean>(true);

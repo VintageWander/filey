@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -17,7 +17,7 @@
 */
 
 import { atom } from "jotai";
-import { FileModel, OsType } from "@/models";
+import { FileModel, OsType, Peer } from "@/models";
 import { type as osType } from "@tauri-apps/plugin-os";
 
 // File list
@@ -26,15 +26,15 @@ export const filesAtom = atom<FileModel[]>([]);
 // Server config related store
 export const connectedToAtom = atom<string>("This machine");
 export const isLocalAtom = atom<boolean>(
-  (get) => get(connectedToAtom) === "This machine"
+  (get) => get(connectedToAtom) === "This machine",
 );
 export const isExternalAtom = atom<boolean>(
-  (get) => get(connectedToAtom) !== "This machine"
+  (get) => get(connectedToAtom) !== "This machine",
 );
 
 export const serverStatusAtom = atom<"online" | "offline">("offline");
 export const isOnlineAtom = atom<boolean>(
-  (get) => get(serverStatusAtom) === "online"
+  (get) => get(serverStatusAtom) === "online",
 );
 
 export const localIpsAtom = atom<string[]>([]);
@@ -45,3 +45,5 @@ export const isDesktopAtom = atom<boolean>((get) => {
   let os = get(hostOsAtom);
   return os === "macos" || os === "windows" || os === "linux";
 });
+
+export const peersAtom = atom<Peer[]>([]);

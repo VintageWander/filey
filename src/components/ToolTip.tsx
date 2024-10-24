@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -16,21 +16,34 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Tooltip as TooltipInner, useComputedColorScheme } from "@mantine/core";
+import {
+  Tooltip as TooltipInner,
+  Text,
+  useComputedColorScheme,
+} from "@mantine/core";
 import React from "react";
 export const Tooltip = ({
   label,
+  disabled = false,
   children,
 }: {
-  label: string | React.JSX.Element;
+  label: string;
+  disabled?: boolean;
   children: React.JSX.Element;
 }) => {
   const colorScheme = useComputedColorScheme();
   return (
     <TooltipInner
+      multiline
+      disabled={disabled}
       maw={"95%"}
-      label={label}
+      label={
+        <Text size="sm" truncate>
+          {label}
+        </Text>
+      }
       color={colorScheme === "light" ? "white" : "gray"}
+      events={{ hover: true, focus: true, touch: true }}
     >
       {children}
     </TooltipInner>

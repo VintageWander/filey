@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -21,9 +21,11 @@ import { useAtom } from "jotai";
 import {
   connectedToAtom,
   hostOsAtom,
+  isExternalAtom,
   isLocalAtom,
   isOnlineAtom,
   localIpsAtom,
+  peersAtom,
   serverStatusAtom,
 } from "@/store";
 import { capitalLetter, printLocalMachineName } from "@/utils";
@@ -42,13 +44,24 @@ export const ServerConfig = () => {
   const [serverStatus, setServerStatus] = useAtom(serverStatusAtom);
   const [localIps, setLocalIps] = useAtom<string[]>(localIpsAtom);
 
+  const [hostOs] = useAtom(hostOsAtom);
+  const [peers] = useAtom(peersAtom);
+
   const [isLocal] = useAtom(isLocalAtom);
   const [isOnline] = useAtom(isOnlineAtom);
+  const [isExternal] = useAtom(isExternalAtom);
 
-  const [hostOs] = useAtom(hostOsAtom);
   const [existsBattery, setExistsBattery] = useState<boolean>(true);
 
   const [opened, { open, close }] = useDisclosure(false);
+
+  // ------------------------------ Utils --------------------------------
+  const getExternalIcon = () => {
+    const osType = peers.find(
+      ({ address }) => address === connectedTo,
+    )?.osType!;
+    return <OsIcon os={osType} />;
+  };
 
   // ------------------------------ Effects --------------------------------
 
@@ -60,7 +73,7 @@ export const ServerConfig = () => {
   useEffect(() => {
     const intervalId = setInterval(
       () => invoke<string[]>("local_ips").then(setLocalIps).catch(error),
-      6000
+      6000,
     );
     return () => clearInterval(intervalId);
   }, []);
@@ -77,7 +90,9 @@ export const ServerConfig = () => {
           <Button
             color="cyan"
             onClick={open}
-            leftSection={<OsIcon os={hostOs} />}
+            leftSection={
+              isExternal ? getExternalIcon() : <OsIcon os={hostOs} />
+            }
           >
             {isLocal
               ? printLocalMachineName(hostOs, existsBattery)
@@ -109,19 +124,23 @@ export const ServerConfig = () => {
           )
         }
 
-        {/* Local ip addresses */}
-        <Group justify="space-between">
-          <Text>Local IP addresses:</Text>
-          {isOnline ? (
-            <Stack>
-              {localIps.map((ip) => (
-                <code key={ip}>{ip}:38899</code>
-              ))}
-            </Stack>
-          ) : (
-            "Currently offline"
-          )}
-        </Group>
+        {
+          /* Local ip addresses */
+          isLocal && (
+            <Group justify="space-between">
+              <Text>Local IP addresses:</Text>
+              {isOnline ? (
+                <Stack>
+                  {localIps.map((ip) => (
+                    <code key={ip}>{ip}:38899</code>
+                  ))}
+                </Stack>
+              ) : (
+                "Currently offline"
+              )}
+            </Group>
+          )
+        }
       </Stack>
     </>
   );
