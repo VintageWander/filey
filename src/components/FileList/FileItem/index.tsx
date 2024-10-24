@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -23,6 +23,8 @@ import {
   isDesktopAtom,
   isExternalAtom,
   isLocalAtom,
+  isOnlineAtom,
+  localIpsAtom,
 } from "@/store";
 import {
   Modal,
@@ -34,19 +36,20 @@ import {
   Text,
   Divider,
   Button,
-  CopyButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtom } from "jotai";
 import ReactPlayer from "react-player";
-import { FileIcon } from "@/components/FileList/FileIcon";
+import { FileIcon } from "@/components/FileList/FileItem/FileIcon";
 import { open as openUrl } from "@tauri-apps/plugin-shell";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
-import { FiCheck, FiCopy, FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FaDownload, FaFolder, FaTrashAlt } from "react-icons/fa";
-import { MdFileOpen } from "react-icons/md";
+import { MdFileOpen, MdOutlineQrCode2 } from "react-icons/md";
 import { Tooltip } from "@/components/ToolTip";
+import { QrCodeModal } from "./QrCodeModal";
+import { CopyButton } from "./CopyButton";
 
 export const FileItem = ({
   file: { id, name, path, visibility },
@@ -58,15 +61,23 @@ export const FileItem = ({
   const theme = useMantineTheme();
   const [files, setFiles] = useAtom(filesAtom);
   const [connectedTo] = useAtom(connectedToAtom);
-  const [isLocal] = useAtom(isLocalAtom);
-  const [isExternal] = useAtom(isExternalAtom);
+  const [localIps] = useAtom(localIpsAtom);
 
+  const [isLocal] = useAtom(isLocalAtom);
+  const [isOnline] = useAtom(isOnlineAtom);
+  const [isExternal] = useAtom(isExternalAtom);
   const [isDesktop] = useAtom(isDesktopAtom);
+
   const extension = name.split(".").pop()!;
 
   const [
     previewModalOpened,
     { open: openPreviewModal, close: closePreviewModal },
+  ] = useDisclosure(false);
+
+  const [
+    qrCodeModalOpened,
+    { open: openQrCodeModal, close: closeQrCodeModal },
   ] = useDisclosure(false);
 
   // ------------------------------ Render --------------------------------
@@ -84,7 +95,7 @@ export const FileItem = ({
             centered
           >
             {["gif", "png", "jpg", "jpeg", "svg", "webp"].includes(
-              extension
+              extension,
             ) ? (
               <Image
                 src={`http://${connectedTo}:38899/files/${id}`}
@@ -104,16 +115,56 @@ export const FileItem = ({
           </Modal>
         )
       }
+
+      {
+        /* Qr code preview modal */
+        isOnline ||
+          (isExternal && (
+            <QrCodeModal
+              url={
+                isLocal
+                  ? `http://${localIps[0]}:38899/files/${id}`
+                  : `http://${connectedTo}:38899/files/${id}`
+              }
+              opened={qrCodeModalOpened}
+              onClose={closeQrCodeModal}
+            />
+          ))
+      }
+
       {/* File item */}
       <Paper w="100%" withBorder p="xs">
         <Stack gap={"xs"}>
-          <Group>
-            <FileIcon extension={extension} />
-            <Text w="86%" lineClamp={1}>
-              {name}
-            </Text>
-          </Group>
+          {/* File icon, name, QR code button */}
+          <Group justify="space-between">
+            <Group w="85%">
+              {/* File extension icon */}
+              <FileIcon extension={extension} />
 
+              {/* File name */}
+              <Text w={"80%"} truncate>
+                {name}
+              </Text>
+            </Group>
+
+            {/* Qr code */}
+            <Tooltip
+              disabled={isOnline && visibility === "public"}
+              label="Requires server status online and visibility public"
+            >
+              <Button
+                px="3px"
+                variant="subtle"
+                color="grape"
+                disabled={
+                  isExternal ? false : !isOnline || visibility === "public"
+                }
+                onClick={openQrCodeModal}
+              >
+                <MdOutlineQrCode2 size="2em" />
+              </Button>
+            </Tooltip>
+          </Group>
           <Divider />
 
           {/* Button group */}
@@ -141,7 +192,7 @@ export const FileItem = ({
 
                     setFiles(modifiedFiles);
                     invoke("upsert_files", { files: modifiedFiles }).catch(
-                      error
+                      error,
                     );
                   }}
                   color={visibility === "public" ? "lime" : "gray"}
@@ -160,13 +211,7 @@ export const FileItem = ({
                 Disable reveal button on mobile since it does not support
               */
               isLocal && isDesktop && (
-                <Tooltip
-                  label={
-                    <Text size="sm" lineClamp={2}>
-                      {path}
-                    </Text>
-                  }
-                >
+                <Tooltip label={path}>
                   <Button
                     onClick={() => invoke("reveal", { path }).catch(error)}
                     variant="subtle"
@@ -183,18 +228,20 @@ export const FileItem = ({
             {
               /* Delete button */
               isLocal && (
-                <Button
-                  variant="subtle"
-                  color={theme.colors.red[5]}
-                  px="10px"
-                  onClick={() => {
-                    invoke("delete_file", { id });
-                    setFiles(files.filter((file) => file.id !== id));
-                  }}
-                  leftSection={<FaTrashAlt color={theme.colors.red[5]} />}
-                >
-                  Delete
-                </Button>
+                <Tooltip label="Remove from file list">
+                  <Button
+                    variant="subtle"
+                    color={theme.colors.red[5]}
+                    px="10px"
+                    onClick={() => {
+                      invoke("delete_file", { id });
+                      setFiles(files.filter((file) => file.id !== id));
+                    }}
+                    leftSection={<FaTrashAlt color={theme.colors.red[5]} />}
+                  >
+                    Delete
+                  </Button>
+                </Tooltip>
               )
             }
 
@@ -202,21 +249,9 @@ export const FileItem = ({
               /* Copy link button */
               isExternal && (
                 <CopyButton
-                  value={`http://${connectedTo}:38899/files/${id}`}
-                  timeout={1500}
-                >
-                  {({ copied, copy }) => (
-                    <Button
-                      px="10px"
-                      color={copied ? "teal" : "cyan"}
-                      variant="subtle"
-                      onClick={copy}
-                      leftSection={copied ? <FiCheck /> : <FiCopy />}
-                    >
-                      Copy link
-                    </Button>
-                  )}
-                </CopyButton>
+                  url={`http://${connectedTo}:38899/files/${id}`}
+                  title="Copy link"
+                />
               )
             }
 
@@ -255,7 +290,7 @@ export const FileItem = ({
                 leftSection={<FaDownload />}
                 onClick={() =>
                   openUrl(
-                    `http://${connectedTo}:38899/files/${id}?mode=download`
+                    `http://${connectedTo}:38899/files/${id}?mode=download`,
                   )
                 }
               >
