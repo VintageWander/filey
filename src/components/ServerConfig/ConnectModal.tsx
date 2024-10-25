@@ -72,7 +72,6 @@ export const ConnectModal = ({
             }
           }
         });
-        console.log(peers);
       })
       .catch(error);
   };
