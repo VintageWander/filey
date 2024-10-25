@@ -118,18 +118,17 @@ export const FileItem = ({
 
       {
         /* Qr code preview modal */
-        isOnline ||
-          (isExternal && (
-            <QrCodeModal
-              url={
-                isLocal
-                  ? `http://${localIps[0]}:38899/files/${id}`
-                  : `http://${connectedTo}:38899/files/${id}`
-              }
-              opened={qrCodeModalOpened}
-              onClose={closeQrCodeModal}
-            />
-          ))
+        (isOnline || isExternal) && (
+          <QrCodeModal
+            url={
+              isLocal
+                ? `http://${localIps[0]}:38899/files/${id}`
+                : `http://${connectedTo}:38899/files/${id}`
+            }
+            opened={qrCodeModalOpened}
+            onClose={closeQrCodeModal}
+          />
+        )
       }
 
       {/* File item */}
@@ -157,7 +156,7 @@ export const FileItem = ({
                 variant="subtle"
                 color="grape"
                 disabled={
-                  isExternal ? false : !isOnline || visibility === "public"
+                  isExternal ? false : !isOnline || visibility === "private"
                 }
                 onClick={openQrCodeModal}
               >
