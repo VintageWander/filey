@@ -33,7 +33,7 @@ pub enum OsType {
     Linux,
     Windows,
     Macos,
-    IOS,
+    Ios,
     Android,
 }
 
@@ -43,7 +43,7 @@ impl From<tauri_plugin_os::OsType> for OsType {
             tauri_plugin_os::OsType::Linux => OsType::Linux,
             tauri_plugin_os::OsType::Windows => OsType::Windows,
             tauri_plugin_os::OsType::Macos => OsType::Macos,
-            tauri_plugin_os::OsType::IOS => OsType::IOS,
+            tauri_plugin_os::OsType::IOS => OsType::Ios,
             tauri_plugin_os::OsType::Android => OsType::Android,
         }
     }
