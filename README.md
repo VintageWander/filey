@@ -17,13 +17,15 @@ and there but in general the tool has minimal bugs
 
 # Known issues
 
-Currently for whatever reason, the android build does not include the capability to show image or video embedded inside the app. <br>
-Therefore when you preview an image or an mp4 video, it will open the default browser for you to view
+1. Currently for whatever reason, the android build does not include the capability to show image or video embedded inside the app. <br>
+   Therefore when you preview an image or an mp4 video, it will open the default browser for you to view
+2. Windows on ARM build not supported (this is tauri's issue)
 
 # Usage instructions
 
-As for now I haven't published a release build for this application, however you can build it for yourself.
-The dev version runs fine on macOS and Android, since those are the devices that I have at my disposal
+As for now I haven't published a release build for this application, since I don't have money for a license for now. \
+However you can build it for yourself. The dev version runs fine on macOS and Android, since those are the devices
+that I have at my disposal
 
 ## Pre-requisites
 
@@ -31,27 +33,31 @@ You need to have [`NodeJS`](https://nodejs.org/en) and [`Rust`](https://www.rust
 
 ## Build
 
+Notice the `SQL_OFFLINE=true` environment variable, this is required since I use the macros feature of
+the `sqlx` crate
+
 ### For macOS:
 
 ```bash
-npx tauri build -- --bundles dmg
+SQLX_OFFLINE=true npx tauri build -- --bundles dmg
 ```
 
 ### For Android:
 
-[You have to sign the application first, or else Android WILL NOT let you install. \
+[You'll have to sign the application first, or else Android WILL NOT let you install. \
 Follow this guide after downloading the source code](https://tauri.app/distribute/sign/android/)
 
 ```bash
-npx tauri android build --apk --target aarch64
+SQLX_OFFLINE=true npx tauri android build --apk --target aarch64
 ```
 
 ### For iOS:
 
 You'll need to sign the application with your Apple Developer account, I've only tested this application in a simulator
+and it runs okay
 
 ```bash
-npx tauri ios build
+SQLX_OFFLINE=true npx tauri ios build
 ```
 
 ### For Windows:
@@ -61,7 +67,7 @@ Build it on a real Windows machine or a VM
 #### X86_64:
 
 ```bash
-npx tauri build
+SQLX_OFFLINE=true npx tauri build
 ```
 
 #### ARM64:
@@ -75,8 +81,9 @@ Pre-requisites for building on ARM64 Windows:
    `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\Llvm\ARM64\bin`
 4. Finally
     ```bash
-    npx tauri build
+    SQLX_OFFLINE=truenpx tauri build
     ```
 
-Does not work currently, the application compiles until this error is shown: \
-`Unknown Scheme: cannot make HTTPS request because no TLS backend is configured`
+The Windows on ARM build currently does not compile successful, the application compiles until this error is shown: \
+`Unknown Scheme: cannot make HTTPS request because no TLS backend is configured`. \
+This is actually Tauri's issue and I'm waiting for them to push out a fix
