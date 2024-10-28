@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
