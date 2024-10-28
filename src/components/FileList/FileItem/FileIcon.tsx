@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -19,6 +19,8 @@
 import { Group } from "@mantine/core";
 import { FileIcon as FileLogo } from "react-file-icon";
 
+// File icon that shows the file extension
+// I extract this to a separate component to restricts its size
 export const FileIcon = ({ extension }: { extension: string }) => {
   return (
     <Group w="35px" pl="xs" align="center">

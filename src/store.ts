@@ -23,7 +23,11 @@ import { type as osType } from "@tauri-apps/plugin-os";
 // File list
 export const filesAtom = atom<FileModel[]>([]);
 
-// Server config related store
+/*
+  Connected device
+  Type: string
+  Possible values: "This machine" | <local ip address 1> | <local ip address 2> | ...
+*/
 export const connectedToAtom = atom<string>("This machine");
 export const isLocalAtom = atom<boolean>(
   (get) => get(connectedToAtom) === "This machine",
@@ -32,18 +36,38 @@ export const isExternalAtom = atom<boolean>(
   (get) => get(connectedToAtom) !== "This machine",
 );
 
+/*
+  Server status
+  Type: string
+  Possible values: "online" | "offline"
+*/
 export const serverStatusAtom = atom<"online" | "offline">("offline");
 export const isOnlineAtom = atom<boolean>(
   (get) => get(serverStatusAtom) === "online",
 );
 
+/*
+  Host machine's local ip addresses
+  Type: string[]
+  Possible values: [<ip1>, <ip2>, <ip3>]
+  Why a string array? One device could have multiple interfaces, and they each have their own local ip address
+  However we're not listing all of them, instead this array only keeps private ip address (172.16.x.x, 192.168.x.x, 10.0.x.x)
+*/
 export const localIpsAtom = atom<string[]>([]);
 
+/*
+  This store can be used to quickly reference the OS type of the host machine
+*/
 export const hostOsAtom = atom<OsType>((_) => osType());
 
+// Checks if it is a desktop
 export const isDesktopAtom = atom<boolean>((get) => {
   let os = get(hostOsAtom);
   return os === "macos" || os === "windows" || os === "linux";
 });
 
+/*
+  List of scanned Filey peers within the local network
+  This will store peers from all network interfaces of the host machine
+*/
 export const peersAtom = atom<Peer[]>([]);

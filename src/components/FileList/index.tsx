@@ -76,10 +76,17 @@ export const FileList = () => {
   };
 
   const refresh = async () => {
+    /*
+      Since the file list can be 1) Local imported files and 2) Files from other Filey peers
+      Therefore we have to handle 2 cases
+    */
     try {
+      // If we're not connecting to any Filey peers
       if (isLocal) {
+        // Get the local file list
         const dbFiles = await invoke<FileModel[]>("get_files");
 
+        // Deletes any file that has incorrect path
         if (dbFiles.length) {
           dbFiles.forEach(({ id, path }) => {
             invoke("exists", { path }).catch(() => {
@@ -88,13 +95,18 @@ export const FileList = () => {
             });
           });
         }
+        // Finally sets the file list
         setFiles(dbFiles);
       } else {
+        // If we're connecting to a Filey peer
+        // Get the list of external files, however we can only get the file name and id
+        // since visibility of course is public, and the path is hidden (We don't even need that)
         const externalFiles = await invoke<FileResponse[]>(
           "get_files_from_peer",
           { ip: connectedTo },
         );
 
+        // Set the local file list to a converted file array
         setFiles(
           externalFiles.map(({ id, name }) => {
             return {
@@ -102,11 +114,12 @@ export const FileList = () => {
               name,
               visibility: "public",
               path: "Unknown",
-            } as FileModel;
+            } satisfies FileModel;
           }),
         );
       }
     } catch (err: any) {
+      // If there's any error (connection dropped, peer offline, ...) revert back to local files
       setConnectedTo("This machine");
     }
   };

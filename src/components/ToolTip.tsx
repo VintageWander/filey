@@ -22,6 +22,8 @@ import {
   useComputedColorScheme,
 } from "@mantine/core";
 import React from "react";
+
+// A small tooltip that shows on hover or touch, change color on app theme
 export const Tooltip = ({
   label,
   disabled = false,
@@ -43,7 +45,7 @@ export const Tooltip = ({
         </Text>
       }
       color={colorScheme === "light" ? "white" : "gray"}
-      events={{ hover: true, focus: true, touch: true }}
+      events={{ hover: true, focus: false, touch: true }}
     >
       {children}
     </TooltipInner>

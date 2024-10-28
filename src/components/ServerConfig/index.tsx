@@ -56,6 +56,7 @@ export const ServerConfig = () => {
   const [opened, { open, close }] = useDisclosure(false);
 
   // ------------------------------ Utils --------------------------------
+
   const getExternalIcon = () => {
     const osType = peers.find(
       ({ address }) => address === connectedTo,
@@ -65,11 +66,13 @@ export const ServerConfig = () => {
 
   // ------------------------------ Effects --------------------------------
 
+  // Get the host machine's local ip addresses and battery existence on startup
   useEffect(() => {
     invoke<string[]>("local_ips").then(setLocalIps).catch(error);
     invoke<boolean>("check_battery").then(setExistsBattery).catch(error);
   }, []);
 
+  // Refreshes the list of local ip addresses every 6 seconds
   useEffect(() => {
     const intervalId = setInterval(
       () => invoke<string[]>("local_ips").then(setLocalIps).catch(error),
@@ -82,7 +85,9 @@ export const ServerConfig = () => {
 
   return (
     <>
+      {/* Connection manager modal */}
       <ConnectModal opened={opened} closeModal={close} />
+
       <Stack>
         {/* Connected to */}
         <Group justify="space-between">

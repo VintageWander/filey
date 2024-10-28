@@ -1,6 +1,7 @@
 import { Button, Text, CopyButton as CopyButtonInner } from "@mantine/core";
 import { FiCheck, FiCopy } from "react-icons/fi";
 
+// Copy link button, copy icon will change to check icon on click
 export const CopyButton = ({
   url,
   title = "Copy link",

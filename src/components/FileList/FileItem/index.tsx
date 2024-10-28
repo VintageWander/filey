@@ -82,6 +82,13 @@ export const FileItem = ({
 
   // ------------------------------ Render --------------------------------
 
+  /*
+    Notice that on every interaction to get the file, is an http query?
+    This is because the file list we keep locally only contains the name and id of the file,
+    not the actual file itself. So in order to get the file contents we have to make an http query,
+    because downloading every file from an external peer will be costly
+  */
+
   return (
     <>
       {

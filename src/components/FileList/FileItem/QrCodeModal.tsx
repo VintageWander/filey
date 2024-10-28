@@ -20,6 +20,7 @@ import { Modal, Stack } from "@mantine/core";
 import { CopyButton } from "./CopyButton";
 import QrCode from "react-qr-code";
 
+// Shows QR code and copy link
 export const QrCodeModal = ({
   url,
   opened,

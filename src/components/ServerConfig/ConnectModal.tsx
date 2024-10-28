@@ -47,32 +47,44 @@ export const ConnectModal = ({
 
   // -------------------------- Utils ----------------------------------
 
+  // Refresh function
   const refresh = () => {
+    // Ask Tauri layer to get a list of local ip addresses
     invoke<string[]>("local_ips")
+      // If Tauri resolves and return a list
       .then((dbLocalIp) => {
+        // Set scanned peers to empty because we're refreshing
         setPeers([]);
+        // Set the local ip addresses list to atom state
         setLocalIps(dbLocalIp);
+        // For each of the local ip address
         dbLocalIp.forEach((ip) => {
-          // 192.168.1.10 -> [192, 168, 1, 10]
-          const splitIp = ip.split(".");
-          // 10
-          const originalEndIp = Number(splitIp.pop());
-          // 192.168.1
-          const baseIp = splitIp.join(".");
-          // 192.168.1.1 -> 192.168.1.255
+          const splitIp = ip.split("."); // 192.168.1.10 -> [192, 168, 1, 10]
+          const originalEndIp = Number(splitIp.pop()); // 10
+          const baseIp = splitIp.join("."); // 192.168.1
+          // Looping from 192.168.1.1 -> 192.168.1.255
           for (let endIp = 1; endIp <= 255; ++endIp) {
+            /*
+              Make a query to http://192.168.1.x:38899/info to get information on every interation of the loop,
+              exclude the case of x equals to originalEndIp to prevent self connecting
+            */
             if (originalEndIp != endIp) {
               invoke<Peer>("check_peer", {
                 ip: `${baseIp}.${endIp}`,
               })
+                // If query success, add to the list of peers
                 .then((peer) => {
                   setPeers([...peers, peer]);
                 })
+                // Just ignores if query failed
+                // I must add this or else dev console will scream Unhandled Promise exception
                 .catch(() => {});
             }
           }
         });
       })
+      // There could be a case when the interface cannot call Tauri's command,
+      // chances are low but never zero
       .catch(error);
   };
 

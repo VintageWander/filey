@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -20,6 +20,7 @@ import { FaAndroid, FaApple, FaLinux, FaWindows } from "react-icons/fa";
 import { MdDeviceUnknown } from "react-icons/md";
 import { OsType } from "@/models";
 
+// Shows os icon based on props
 export const OsIcon = ({ os }: { os: OsType }) =>
   os === "android" ? (
     <FaAndroid />
