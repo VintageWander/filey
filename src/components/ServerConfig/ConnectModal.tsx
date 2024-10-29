@@ -17,7 +17,7 @@
 */
 
 import { Peer } from "@/models";
-import { connectedToAtom, hostOsAtom, localIpsAtom, peersAtom } from "@/store";
+import { connectedToAtom, hostOs, localIpsAtom, peersAtom } from "@/store";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
@@ -26,6 +26,7 @@ import { Text, Group, Modal, Stack, Button } from "@mantine/core";
 import { OsIcon } from "../OsIcon";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { printLocalMachineName } from "@/utils";
+import { type as osType } from "@tauri-apps/plugin-os";
 
 export const ConnectModal = ({
   opened,
@@ -36,8 +37,7 @@ export const ConnectModal = ({
 }) => {
   // ----------------------------- State ------------------------------------
 
-  const [, setConnectedTo] = useAtom(connectedToAtom);
-  const [hostOs] = useAtom(hostOsAtom);
+  const [connectedTo, setConnectedTo] = useAtom(connectedToAtom);
   const [peers, setPeers] = useAtom<Peer[]>(peersAtom);
   const [, setLocalIps] = useAtom(localIpsAtom);
 
@@ -135,7 +135,10 @@ export const ConnectModal = ({
           mx="0"
           justify="space-between"
           onClick={() => {
-            setConnectedTo("This machine");
+            setConnectedTo({
+              address: "This machine",
+              osType: hostOs,
+            } satisfies Peer);
             closeModal();
           }}
           leftSection={<OsIcon os={hostOs} />}
@@ -145,11 +148,12 @@ export const ConnectModal = ({
         </Button>
         {peers.map(({ address, osType }) => (
           <Button
-            key={address}
+            key={address + " " + osType}
             variant="light"
             color="lime"
             onClick={() => {
-              setConnectedTo(address);
+              setConnectedTo({ address, osType });
+              console.log(connectedTo);
               closeModal();
             }}
             mx="0"

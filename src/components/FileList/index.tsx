@@ -19,12 +19,12 @@
 import { Button, Text, Group, Loader, Stack } from "@mantine/core";
 import { useAtom } from "jotai";
 import { FaFileImport, FaArrowsRotate } from "react-icons/fa6";
-import { connectedToAtom, filesAtom, isLocalAtom } from "@/store";
+import { connectedToAtom, filesAtom, hostOs, isLocalAtom } from "@/store";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import { open as openFileDialog } from "@tauri-apps/plugin-dialog";
-import { FileModel, FileResponse } from "@/models";
+import { FileModel, FileResponse, Peer } from "@/models";
 import { v4 as UuidV4 } from "uuid";
 import { FileItem } from "./FileItem";
 
@@ -103,7 +103,7 @@ export const FileList = () => {
         // since visibility of course is public, and the path is hidden (We don't even need that)
         const externalFiles = await invoke<FileResponse[]>(
           "get_files_from_peer",
-          { ip: connectedTo },
+          { ip: connectedTo.address },
         );
 
         // Set the local file list to a converted file array
@@ -120,7 +120,11 @@ export const FileList = () => {
       }
     } catch (err: any) {
       // If there's any error (connection dropped, peer offline, ...) revert back to local files
-      setConnectedTo("This machine");
+      console.log(err);
+      setConnectedTo({
+        address: "This machine",
+        osType: hostOs,
+      } satisfies Peer);
     }
   };
 

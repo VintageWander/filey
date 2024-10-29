@@ -17,8 +17,11 @@
 */
 
 import { atom } from "jotai";
-import { FileModel, OsType, Peer } from "@/models";
+import { FileModel, Peer } from "@/models";
 import { type as osType } from "@tauri-apps/plugin-os";
+
+// Host OS
+export const hostOs = osType();
 
 // File list
 export const filesAtom = atom<FileModel[]>([]);
@@ -28,12 +31,15 @@ export const filesAtom = atom<FileModel[]>([]);
   Type: string
   Possible values: "This machine" | <local ip address 1> | <local ip address 2> | ...
 */
-export const connectedToAtom = atom<string>("This machine");
+export const connectedToAtom = atom<Peer>({
+  address: "This machine",
+  osType: hostOs,
+} satisfies Peer);
 export const isLocalAtom = atom<boolean>(
-  (get) => get(connectedToAtom) === "This machine",
+  (get) => get(connectedToAtom).address === "This machine",
 );
 export const isExternalAtom = atom<boolean>(
-  (get) => get(connectedToAtom) !== "This machine",
+  (get) => get(connectedToAtom).address !== "This machine",
 );
 
 /*
@@ -55,16 +61,10 @@ export const isOnlineAtom = atom<boolean>(
 */
 export const localIpsAtom = atom<string[]>([]);
 
-/*
-  This store can be used to quickly reference the OS type of the host machine
-*/
-export const hostOsAtom = atom<OsType>((_) => osType());
-
 // Checks if it is a desktop
-export const isDesktopAtom = atom<boolean>((get) => {
-  let os = get(hostOsAtom);
-  return os === "macos" || os === "windows" || os === "linux";
-});
+export const isDesktopAtom = atom<boolean>(
+  (_get) => hostOs === "macos" || hostOs === "windows" || hostOs === "linux",
+);
 
 /*
   List of scanned Filey peers within the local network

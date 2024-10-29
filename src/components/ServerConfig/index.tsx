@@ -20,12 +20,9 @@ import { Button, Group, Stack, Text } from "@mantine/core";
 import { useAtom } from "jotai";
 import {
   connectedToAtom,
-  hostOsAtom,
-  isExternalAtom,
   isLocalAtom,
   isOnlineAtom,
   localIpsAtom,
-  peersAtom,
   serverStatusAtom,
 } from "@/store";
 import { capitalLetter, printLocalMachineName } from "@/utils";
@@ -44,25 +41,12 @@ export const ServerConfig = () => {
   const [serverStatus, setServerStatus] = useAtom(serverStatusAtom);
   const [localIps, setLocalIps] = useAtom<string[]>(localIpsAtom);
 
-  const [hostOs] = useAtom(hostOsAtom);
-  const [peers] = useAtom(peersAtom);
-
   const [isLocal] = useAtom(isLocalAtom);
   const [isOnline] = useAtom(isOnlineAtom);
-  const [isExternal] = useAtom(isExternalAtom);
 
   const [existsBattery, setExistsBattery] = useState<boolean>(true);
 
   const [opened, { open, close }] = useDisclosure(false);
-
-  // ------------------------------ Utils --------------------------------
-
-  const getExternalIcon = () => {
-    const osType = peers.find(
-      ({ address }) => address === connectedTo,
-    )?.osType!;
-    return <OsIcon os={osType} />;
-  };
 
   // ------------------------------ Effects --------------------------------
 
@@ -95,13 +79,11 @@ export const ServerConfig = () => {
           <Button
             color="cyan"
             onClick={open}
-            leftSection={
-              isExternal ? getExternalIcon() : <OsIcon os={hostOs} />
-            }
+            leftSection={<OsIcon os={connectedTo.osType} />}
           >
             {isLocal
-              ? printLocalMachineName(hostOs, existsBattery)
-              : connectedTo}
+              ? printLocalMachineName(connectedTo.osType, existsBattery)
+              : connectedTo.address}
           </Button>
         </Group>
 
