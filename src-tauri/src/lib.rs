@@ -29,6 +29,7 @@ use log::LevelFilter;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tauri::{path::BaseDirectory, Manager};
+use tauri_plugin_log::{Target, TargetKind};
 use tokio::sync::{oneshot::Sender, Mutex};
 
 pub struct AppState {
@@ -51,6 +52,7 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(
             tauri_plugin_log::Builder::new()
+                .target(Target::new(TargetKind::Stdout))
                 .level(LevelFilter::Info)
                 .build(),
         )
