@@ -170,10 +170,13 @@ pub fn get_file() -> Router<ServerState> {
                 (CONTENT_TYPE, mime),
                 (
                     CONTENT_DISPOSITION,
-                    match mode {
-                        Mode::View => "inline".into(),
-                        Mode::Download => format!("attachment; filename={name}"),
-                    },
+                    format!(
+                        "{}; filename={name}",
+                        match mode {
+                            Mode::View => "inline",
+                            Mode::Download => "attachment",
+                        }
+                    ),
                 ),
             ]),
             Ranged::new(range, body),
