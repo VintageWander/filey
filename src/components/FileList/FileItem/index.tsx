@@ -105,13 +105,13 @@ export const FileItem = ({
               extension,
             ) ? (
               <Image
-                src={`http://${connectedTo}:38899/files/${id}`}
+                src={`http://${connectedTo.address}:38899/files/${id}`}
                 alt={name}
                 width={"100%"}
               />
             ) : extension === "mp4" ? (
               <ReactPlayer
-                url={`http://${connectedTo}:38899/files/${id}`}
+                url={`http://${connectedTo.address}:38899/files/${id}`}
                 controls
                 width={"100%"}
                 playsinline
@@ -130,7 +130,7 @@ export const FileItem = ({
             url={
               isLocal
                 ? `http://${localIps[0]}:38899/files/${id}`
-                : `http://${connectedTo}:38899/files/${id}`
+                : `http://${connectedTo.address}:38899/files/${id}`
             }
             opened={qrCodeModalOpened}
             onClose={closeQrCodeModal}
@@ -255,7 +255,7 @@ export const FileItem = ({
               /* Copy link button */
               isExternal && (
                 <CopyButton
-                  url={`http://${connectedTo}:38899/files/${id}`}
+                  url={`http://${connectedTo.address}:38899/files/${id}`}
                   title="Copy link"
                 />
               )
@@ -280,7 +280,9 @@ export const FileItem = ({
                       "mp4",
                     ].includes(extension) && isDesktop
                       ? openPreviewModal()
-                      : openUrl(`http://${connectedTo}:38899/files/${id}`);
+                      : openUrl(
+                          `http://${connectedTo.address}:38899/files/${id}`,
+                        );
                   }}
                 >
                   Preview
@@ -296,7 +298,7 @@ export const FileItem = ({
                 leftSection={<FaDownload />}
                 onClick={() =>
                   openUrl(
-                    `http://${connectedTo}:38899/files/${id}?mode=download`,
+                    `http://${connectedTo.address}:38899/files/${id}?mode=download`,
                   )
                 }
               >

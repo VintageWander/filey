@@ -36,7 +36,7 @@ export const ConnectModal = ({
 }) => {
   // ----------------------------- State ------------------------------------
 
-  const [connectedTo, setConnectedTo] = useAtom(connectedToAtom);
+  const [, setConnectedTo] = useAtom(connectedToAtom);
   const [peers, setPeers] = useAtom<Peer[]>(peersAtom);
   const [, setLocalIps] = useAtom(localIpsAtom);
 
@@ -152,7 +152,6 @@ export const ConnectModal = ({
             color="lime"
             onClick={() => {
               setConnectedTo({ address, osType });
-              console.log(connectedTo);
               closeModal();
             }}
             mx="0"
