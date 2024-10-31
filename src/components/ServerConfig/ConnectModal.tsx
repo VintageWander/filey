@@ -26,7 +26,6 @@ import { Text, Group, Modal, Stack, Button } from "@mantine/core";
 import { OsIcon } from "../OsIcon";
 import { FaArrowAltCircleRight } from "react-icons/fa";
 import { printLocalMachineName } from "@/utils";
-import { type as osType } from "@tauri-apps/plugin-os";
 
 export const ConnectModal = ({
   opened,
