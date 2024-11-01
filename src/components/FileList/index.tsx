@@ -75,56 +75,60 @@ export const FileList = () => {
       .catch(error);
   };
 
-  const refresh = async () => {
+  const refresh = () => {
     /*
       Since the file list can be 1) Local imported files and 2) Files from other Filey peers
       Therefore we have to handle 2 cases
     */
-    try {
-      // If we're not connecting to any Filey peers
-      if (isLocal) {
-        // Get the local file list
-        const dbFiles = await invoke<FileModel[]>("get_files");
 
-        // Deletes any file that has incorrect path
-        if (dbFiles.length) {
-          dbFiles.forEach(({ id, path }) => {
-            invoke("exists", { path }).catch(() => {
-              invoke("delete_file", { id });
-              setFiles(dbFiles.filter((file) => file.id !== id));
+    // If we're not connecting to any Filey peers
+    if (isLocal) {
+      // Get the local file list
+      invoke<FileModel[]>("get_files")
+        .then((dbFiles) => {
+          // Deletes any file that has incorrect path
+          if (dbFiles.length) {
+            dbFiles.forEach(({ id, path }) => {
+              invoke<boolean>("exists", { path })
+                .then((isExists) => {
+                  if (!isExists) {
+                    invoke("delete_file", { id });
+                    setFiles(dbFiles.filter((file) => file.id !== id));
+                  }
+                })
+                .catch(error);
             });
-          });
-        }
-        // Finally sets the file list
-        setFiles(dbFiles);
-      } else {
-        // If we're connecting to a Filey peer
-        // Get the list of external files, however we can only get the file name and id
-        // since visibility of course is public, and the path is hidden (We don't even need that)
-        const externalFiles = await invoke<FileResponse[]>(
-          "get_files_from_peer",
-          { ip: connectedTo.address },
-        );
-
-        // Set the local file list to a converted file array
-        setFiles(
-          externalFiles.map(({ id, name }) => {
-            return {
-              id,
-              name,
-              visibility: "public",
-              path: "Unknown",
-            } satisfies FileModel;
-          }),
-        );
-      }
-    } catch (err: any) {
-      // If there's any error (connection dropped, peer offline, ...) revert back to local files
-      console.log(err);
-      setConnectedTo({
-        address: "This machine",
-        osType: hostOs,
-      } satisfies Peer);
+          }
+          // Finally sets the file list
+          setFiles(dbFiles);
+        })
+        .catch(error);
+    } else {
+      // If we're connecting to a Filey peer
+      // Get the list of external files, however we can only get the file name and id
+      // since visibility of course is public, and the path is hidden (We don't even need that)
+      invoke<FileResponse[]>("get_files_from_peer", { ip: connectedTo.address })
+        .then((externalFiles) => {
+          // Set the local file list to a converted file array
+          setFiles(
+            externalFiles.map(({ id, name }) => {
+              return {
+                id,
+                name,
+                visibility: "public",
+                path: "Unknown",
+              } satisfies FileModel;
+            }),
+          );
+        })
+        .catch((err) => {
+          // If there's any error (connection dropped, peer offline, ...) revert back to local files
+          console.log(err);
+          setConnectedTo({
+            address: "This machine",
+            osType: hostOs,
+          } satisfies Peer);
+        });
     }
   };
 
@@ -136,13 +140,13 @@ export const FileList = () => {
   useEffect(() => {
     if (!databaseReady) {
       const intervalId = setInterval(() => {
-        invoke("database_ready")
-          .then(() => setDatabaseReady(true))
+        invoke<boolean>("database_ready")
+          .then(setDatabaseReady)
           .catch(() => setDatabaseReady(false));
       }, 2000);
       return () => clearInterval(intervalId);
     }
-  }, []);
+  }, [databaseReady]);
 
   useEffect(() => {
     // Refreshes once every 2 seconds
