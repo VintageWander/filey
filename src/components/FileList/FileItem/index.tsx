@@ -93,7 +93,7 @@ export const FileItem = ({
     <>
       {
         /* Image preview modal */
-        isExternal && isDesktop && (
+        isExternal && (
           <Modal
             size="100%"
             opened={previewModalOpened}
@@ -278,7 +278,7 @@ export const FileItem = ({
                       "svg",
                       "webp",
                       "mp4",
-                    ].includes(extension) && isDesktop
+                    ].includes(extension)
                       ? openPreviewModal()
                       : openUrl(
                           `http://${connectedTo.address}:38899/files/${id}`,
