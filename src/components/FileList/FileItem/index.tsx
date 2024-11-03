@@ -39,7 +39,6 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtom } from "jotai";
-import ReactPlayer from "react-player";
 import { FileIcon } from "@/components/FileList/FileItem/FileIcon";
 import { open as openUrl } from "@tauri-apps/plugin-shell";
 import { invoke } from "@tauri-apps/api/core";
@@ -110,11 +109,12 @@ export const FileItem = ({
                 width={"100%"}
               />
             ) : extension === "mp4" ? (
-              <ReactPlayer
-                url={`http://${connectedTo.address}:38899/files/${id}`}
-                controls
+              <video
+                src={`http://${connectedTo.address}:38899/files/${id}`}
                 width={"100%"}
-                playsinline
+                controls
+                playsInline
+                autoPlay
               />
             ) : (
               <Text>Cannot render video</Text>
