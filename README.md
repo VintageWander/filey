@@ -48,7 +48,9 @@ SQLX_OFFLINE=true npx tauri build -- --bundles dmg
 Follow this guide after downloading the source code](https://tauri.app/distribute/sign/android/)
 
 ```bash
-SQLX_OFFLINE=true npx tauri android build --apk --target aarch64
+# Somehow the debug build on Android runs all features
+# More explanations in the Cargo.toml file
+SQLX_OFFLINE=true npx tauri android build --apk --target aarch64 --debug
 ```
 
 ### For iOS:
