@@ -17,13 +17,24 @@
 */
 
 use crate::{error::Error, files::model::FileResponse, AppState, ServerResponse};
-use axum::Router;
+use axum::{
+    http::{
+        header::{
+            ACCESS_CONTROL_ALLOW_HEADERS, ACCESS_CONTROL_ALLOW_METHODS,
+            ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_DISPOSITION, CONTENT_LENGTH, CONTENT_RANGE,
+            CONTENT_TYPE, ORIGIN,
+        },
+        Method,
+    },
+    Router,
+};
 use tauri::Manager;
 use tauri_plugin_http::reqwest::Client;
 use tokio::{net::TcpListener, signal, sync::oneshot::Receiver};
+use tower_http::cors::{AllowOrigin, CorsLayer};
 
 use super::{
-    handlers::{get_file, get_files, info},
+    handlers::{get_file, get_files, info, preflight},
     model::{OsType, Peer, ServerState},
 };
 
@@ -53,13 +64,35 @@ pub async fn start_server(app_handle: tauri::AppHandle) -> Result<(), Error> {
 
     // Load the handlers into the Router
     let router = Router::new()
+        .merge(preflight())
         .merge(info())
         .merge(get_files())
         .merge(get_file())
         .with_state(ServerState {
             db: state.db.clone(),
             app_handle: app_handle.clone(),
-        });
+        })
+        .layer(
+            CorsLayer::new()
+                .allow_headers([
+                    ORIGIN,
+                    CONTENT_TYPE,
+                    CONTENT_DISPOSITION,
+                    CONTENT_RANGE,
+                    CONTENT_LENGTH,
+                    ACCESS_CONTROL_ALLOW_ORIGIN,
+                    ACCESS_CONTROL_ALLOW_HEADERS,
+                    ACCESS_CONTROL_ALLOW_METHODS,
+                ])
+                .allow_origin(AllowOrigin::any())
+                .allow_methods([
+                    Method::GET,
+                    Method::POST,
+                    Method::PUT,
+                    Method::DELETE,
+                    Method::OPTIONS,
+                ]),
+        );
 
     // Listens for TCP requests on 0.0.0.0:38899
     let tcp_listener = TcpListener::bind("0.0.0.0:38899")

@@ -22,6 +22,7 @@ use crate::{error::Error, ServerResponse};
 use axum::extract::Query;
 use axum::http::header::{CONTENT_DISPOSITION, CONTENT_TYPE};
 use axum::response::AppendHeaders;
+use axum::routing::options;
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -39,6 +40,20 @@ use tauri_plugin_os::type_;
 use uuid::{fmt::Hyphenated, Uuid};
 
 use super::model::ServerState;
+
+pub fn preflight() -> Router<ServerState> {
+    async fn handler() -> Result<Response, Error> {
+        Ok((
+            StatusCode::OK,
+            Json(ServerResponse {
+                message: "Preflight request passed".into(),
+                data: (),
+            }),
+        )
+            .into_response())
+    }
+    Router::new().route("/*rest", options(handler))
+}
 
 // Returns a message and OS type
 pub fn info() -> Router<ServerState> {
