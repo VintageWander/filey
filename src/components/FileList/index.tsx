@@ -70,9 +70,8 @@ export const FileList = () => {
 
     // Invoke the upsert function in Rust,
     // On the Rust side, it will do a "insert on conflict do update" type query to the SQLite database
-    invoke<FileModel[]>("upsert_files", { files: uniqueFiles })
-      .then(setFiles)
-      .catch(error);
+    setFiles(uniqueFiles);
+    invoke<FileModel[]>("upsert_files", { files: uniqueFiles }).catch(error);
   };
 
   const refresh = () => {
