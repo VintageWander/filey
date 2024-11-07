@@ -27,7 +27,13 @@ export default function App() {
   return (
     <MantineProvider>
       <MenuBar />
-      <Container>
+      <Container
+        style={{
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          MozUserSelect: "none",
+        }}
+      >
         <Divider label="Server Config" my="lg" />
         <ServerConfig />
         <Divider label="File list" my="lg" />

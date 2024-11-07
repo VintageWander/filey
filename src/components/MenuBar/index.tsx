@@ -1,4 +1,4 @@
-/* 
+/*
   Filey - simple peer-to-peer file sending across devices on different platforms
   Copyright (C) 2024 Wander Watterson
 
@@ -21,7 +21,16 @@ import { ThemeToggleButton } from "./ThemeToggle";
 
 export const MenuBar = () => {
   return (
-    <Group justify="space-between" mx="lg" my="md">
+    <Group
+      justify="space-between"
+      mx="lg"
+      my="md"
+      style={{
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+      }}
+    >
       <Text
         size="2em"
         fw={900}
