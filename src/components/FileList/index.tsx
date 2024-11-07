@@ -17,16 +17,16 @@
 */
 
 import { Button, Text, Group, Loader, Stack } from "@mantine/core";
-import { useAtom } from "jotai";
 import { FaFileImport, FaArrowsRotate } from "react-icons/fa6";
+import { FileModel, FileResponse, Peer } from "@/models";
+import { FileItem } from "./FileItem";
+import { useAtom } from "jotai";
 import { connectedToAtom, filesAtom, hostOs, isLocalAtom } from "@/store";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import { open as openFileDialog } from "@tauri-apps/plugin-dialog";
-import { FileModel, FileResponse, Peer } from "@/models";
 import { v4 as UuidV4 } from "uuid";
-import { FileItem } from "./FileItem";
 
 export const FileList = () => {
   // ------------------------------ State --------------------------------

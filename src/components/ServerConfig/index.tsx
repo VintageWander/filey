@@ -17,6 +17,9 @@
 */
 
 import { Button, Group, Stack, Text } from "@mantine/core";
+import { FiCloud, FiCloudOff } from "react-icons/fi";
+import { OsIcon } from "@/components/OsIcon";
+import { ConnectModal } from "./ConnectModal";
 import { useAtom } from "jotai";
 import {
   connectedToAtom,
@@ -26,13 +29,10 @@ import {
   serverStatusAtom,
 } from "@/store";
 import { capitalLetter, printLocalMachineName } from "@/utils";
-import { FiCloud, FiCloudOff } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
 import { useDisclosure } from "@mantine/hooks";
-import { OsIcon } from "@/components/OsIcon";
-import { ConnectModal } from "./ConnectModal";
 
 export const ServerConfig = () => {
   // ------------------------------ State --------------------------------

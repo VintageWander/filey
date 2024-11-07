@@ -17,14 +17,14 @@
 */
 
 import { Peer } from "@/models";
+import { Text, Group, Modal, Stack, Button } from "@mantine/core";
+import { OsIcon } from "../OsIcon";
+import { FaArrowAltCircleRight } from "react-icons/fa";
 import { connectedToAtom, hostOs, localIpsAtom, peersAtom } from "@/store";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
-import { Text, Group, Modal, Stack, Button } from "@mantine/core";
-import { OsIcon } from "../OsIcon";
-import { FaArrowAltCircleRight } from "react-icons/fa";
 import { printLocalMachineName } from "@/utils";
 
 export const ConnectModal = ({

@@ -37,11 +37,6 @@ import {
   Divider,
   Button,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useAtom } from "jotai";
-import { open as openUrl } from "@tauri-apps/plugin-shell";
-import { invoke } from "@tauri-apps/api/core";
-import { error } from "@tauri-apps/plugin-log";
 import { FileIcon } from "@/components/FileList/FileItem/FileIcon";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FaDownload, FaFolder, FaTrashAlt } from "react-icons/fa";
@@ -49,6 +44,11 @@ import { MdFileOpen, MdOutlineQrCode2 } from "react-icons/md";
 import { Tooltip } from "@/components/ToolTip";
 import { QrCodeModal } from "./QrCodeModal";
 import { CopyButton } from "./CopyButton";
+import { useDisclosure } from "@mantine/hooks";
+import { useAtom } from "jotai";
+import { open as openUrl } from "@tauri-apps/plugin-shell";
+import { invoke } from "@tauri-apps/api/core";
+import { error } from "@tauri-apps/plugin-log";
 
 export const FileItem = ({
   file: { id, name, path, visibility },
