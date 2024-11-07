@@ -39,10 +39,10 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useAtom } from "jotai";
-import { FileIcon } from "@/components/FileList/FileItem/FileIcon";
 import { open as openUrl } from "@tauri-apps/plugin-shell";
 import { invoke } from "@tauri-apps/api/core";
 import { error } from "@tauri-apps/plugin-log";
+import { FileIcon } from "@/components/FileList/FileItem/FileIcon";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FaDownload, FaFolder, FaTrashAlt } from "react-icons/fa";
 import { MdFileOpen, MdOutlineQrCode2 } from "react-icons/md";
@@ -68,6 +68,17 @@ export const FileItem = ({
   const [isDesktop] = useAtom(isDesktopAtom);
 
   const extension = name.split(".").pop()!;
+  const previewable = [
+    "gif",
+    "png",
+    "jpg",
+    "jpeg",
+    "svg",
+    "webp",
+    "mp4",
+    "mp3",
+    "wav",
+  ].includes(extension);
 
   const [
     previewModalOpened,
@@ -94,7 +105,6 @@ export const FileItem = ({
         /* Image preview modal */
         isExternal && (
           <Modal
-            size="100%"
             opened={previewModalOpened}
             onClose={closePreviewModal}
             title="Preview"
@@ -104,20 +114,26 @@ export const FileItem = ({
               extension,
             ) ? (
               <Image
+                width={"100%"}
                 src={`http://${connectedTo.address}:38899/files/${id}`}
                 alt={name}
-                width={"100%"}
               />
             ) : extension === "mp4" ? (
               <video
-                src={`http://${connectedTo.address}:38899/files/${id}`}
                 width={"100%"}
+                src={`http://${connectedTo.address}:38899/files/${id}`}
                 controls
                 playsInline
                 autoPlay
               />
+            ) : ["mp3", "wav"].includes(extension) ? (
+              <audio
+                src={`http://${connectedTo.address}:38899/files/${id}`}
+                controls
+                playsInline
+              />
             ) : (
-              <Text>Cannot render video</Text>
+              <Text>Cannot render content</Text>
             )}
           </Modal>
         )
@@ -270,15 +286,7 @@ export const FileItem = ({
                   variant="subtle"
                   leftSection={<MdFileOpen />}
                   onClick={() => {
-                    [
-                      "gif",
-                      "png",
-                      "jpg",
-                      "jpeg",
-                      "svg",
-                      "webp",
-                      "mp4",
-                    ].includes(extension)
+                    previewable
                       ? openPreviewModal()
                       : openUrl(
                           `http://${connectedTo.address}:38899/files/${id}`,
