@@ -17,7 +17,7 @@ and there but in general the tool has minimal bugs
 
 # Known issues
 
-1. Currently for whatever reason, the android build does not include the capability to show image or video embedded inside the app. <br>
+1. Currently for whatever reason, the android build does not include the capability to show image or video embedded inside the app. \
    Therefore when you preview an image or an mp4 video, it will open the default browser for you to view
 2. Windows on ARM build not supported (this is tauri's issue)
 
@@ -33,7 +33,7 @@ You need to have [`NodeJS`](https://nodejs.org/en) and [`Rust`](https://www.rust
 
 ## Build
 
-Notice the `SQL_OFFLINE=true` environment variable, this is required since I use the macros feature of
+Notice the `SQLX_OFFLINE=true` environment variable, this is required since I use the macros feature of
 the `sqlx` crate
 
 ### For macOS:
