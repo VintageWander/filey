@@ -68,8 +68,8 @@ tauri-plugin-http = "2"
 tauri-plugin-log = "2"
 tauri-plugin-os = "2"
 tauri-plugin-shell = "2"
-thiserror = "1.0.68"
-tokio = { version = "1.41.0", features = ["fs", "process", "signal"] }
+thiserror = "2.0.3"
+tokio = { version = "1.41.1", features = ["fs", "process", "signal"] }
 tower-http = { version = "0.6.1", features = ["cors"] }
 uuid = "1.11.0"
 
