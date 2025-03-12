@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-use log::info;
+use log::{error, info};
 use sqlx::SqlitePool;
 use tokio::fs::{create_dir_all, File};
 
@@ -24,8 +24,14 @@ pub async fn connect_and_migrate(path: String) -> SqlitePool {
     // The path is the full direction from the directory to the file data.db itself
     // Chop off the right half to get the parent directories and create them
     // After that create the database file
+    #[cfg(unix)]
     let (parent_dir, _) = path
         .rsplit_once("/")
+        .expect("Cannot split path to get parent dir");
+
+    #[cfg(windows)]
+    let (parent_dir, _) = path
+        .rsplit_once("\\")
         .expect("Cannot split path to get parent dir");
 
     // 2 function calls below will emit an error if the directory or file already exists
@@ -37,17 +43,19 @@ pub async fn connect_and_migrate(path: String) -> SqlitePool {
     // Create database file
     File::create_new(&path).await.ok();
 
+    // Connect to database
     let db = SqlitePool::connect(&format!("sqlite://{path}"))
         .await
-        .map_err(|err| log::error!("{err}"))
+        .map_err(|err| error!("{err}"))
         .expect("Cannot get db file");
 
     info!("Connected to database");
 
+    // Run migrations
     sqlx::migrate!("../migrations")
         .run(&db)
         .await
-        .map_err(|err| log::error!("{err}"))
+        .map_err(|err| error!("{err}"))
         .expect("Migrate failed");
 
     info!("Migrate database successfully");
