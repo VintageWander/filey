@@ -36,10 +36,10 @@ export const connectedToAtom = atom<Peer>({
   osType: hostOs,
 } satisfies Peer);
 export const isLocalAtom = atom<boolean>(
-  (get) => get(connectedToAtom).address === "This machine",
+  (get) => get(connectedToAtom).address === "This machine"
 );
 export const isExternalAtom = atom<boolean>(
-  (get) => get(connectedToAtom).address !== "This machine",
+  (get) => get(connectedToAtom).address !== "This machine"
 );
 
 /*
@@ -49,7 +49,7 @@ export const isExternalAtom = atom<boolean>(
 */
 export const serverStatusAtom = atom<"online" | "offline">("offline");
 export const isOnlineAtom = atom<boolean>(
-  (get) => get(serverStatusAtom) === "online",
+  (get) => get(serverStatusAtom) === "online"
 );
 
 /*
@@ -63,7 +63,7 @@ export const localIpsAtom = atom<string[]>([]);
 
 // Checks if it is a desktop
 export const isDesktopAtom = atom<boolean>(
-  (_get) => hostOs === "macos" || hostOs === "windows" || hostOs === "linux",
+  (_get) => hostOs === "macos" || hostOs === "windows" || hostOs === "linux"
 );
 
 /*

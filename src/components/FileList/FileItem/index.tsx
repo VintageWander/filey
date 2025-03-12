@@ -111,7 +111,7 @@ export const FileItem = ({
             centered
           >
             {["gif", "png", "jpg", "jpeg", "svg", "webp"].includes(
-              extension,
+              extension
             ) ? (
               <Image
                 width={"100%"}
@@ -214,7 +214,7 @@ export const FileItem = ({
 
                     setFiles(modifiedFiles);
                     invoke("upsert_files", { files: modifiedFiles }).catch(
-                      error,
+                      error
                     );
                   }}
                   color={visibility === "public" ? "lime" : "gray"}
@@ -289,7 +289,7 @@ export const FileItem = ({
                     previewable
                       ? openPreviewModal()
                       : openUrl(
-                          `http://${connectedTo.address}:38899/files/${id}`,
+                          `http://${connectedTo.address}:38899/files/${id}`
                         );
                   }}
                 >
@@ -306,7 +306,7 @@ export const FileItem = ({
                 leftSection={<FaDownload />}
                 onClick={() =>
                   openUrl(
-                    `http://${connectedTo.address}:38899/files/${id}?mode=download`,
+                    `http://${connectedTo.address}:38899/files/${id}?mode=download`
                   )
                 }
               >

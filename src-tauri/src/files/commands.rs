@@ -193,7 +193,7 @@ pub async fn upsert_files(app_handle: AppHandle, files: Vec<File>) -> Result<Vec
     Ok(sqlx::query_as!(
         File,
         r#"
-            select 
+            select
                 id as "id!: Hyphenated",
                 name,
                 visibility as "visibility!: Visibility",

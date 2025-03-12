@@ -65,7 +65,7 @@ export const FileList = () => {
 
     // Makes sure that each file has an unique path
     const uniqueFiles: FileModel[] = mergedFiles.filter(
-      (file, index) => !allPaths.includes(file.path, index + 1),
+      (file, index) => !allPaths.includes(file.path, index + 1)
     );
 
     // Invoke the upsert function in Rust,
@@ -117,7 +117,7 @@ export const FileList = () => {
                 visibility: "public",
                 path: "Unknown",
               } satisfies FileModel;
-            }),
+            })
           );
         })
         .catch((err) => {

@@ -1,4 +1,4 @@
-/* 
+/*
     Filey - simple peer-to-peer file sending across devices on different platforms
     Copyright (C) 2024 Wander Watterson
 
@@ -38,7 +38,7 @@ pub async fn database_ready(app_handle: AppHandle) -> bool {
 
 #[tauri::command]
 pub fn local_ips() -> Result<Vec<String>, Error> {
-    let local_ips = 
+    let local_ips =
     // List all network interfaces
     list_afinet_netifas()?
         // Goes through each of them
