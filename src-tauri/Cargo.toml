@@ -50,7 +50,7 @@ axum-extra = { version = "0.9.6", features = ["typed-header"] }
 axum-range = "0.4.0"
 infer = "0.16.0"
 local-ip-address = "0.6.3"
-log = "0.4.26"
+log = "0.4.27"
 mime_guess = "2.0.5"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -69,9 +69,9 @@ tauri-plugin-log = "2"
 tauri-plugin-os = "2"
 tauri-plugin-shell = "2"
 thiserror = "2.0.12"
-tokio = { version = "1.44.0", features = ["fs", "process", "signal"] }
+tokio = { version = "1.44.1", features = ["fs", "process", "signal"] }
 tower-http = { version = "0.6.2", features = ["cors"] }
-uuid = "1.15.1"
+uuid = "1.16.0"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 battery = "0.7.8"
