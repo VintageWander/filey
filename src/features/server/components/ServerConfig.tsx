@@ -35,6 +35,7 @@ import { OsIcon } from "@/components/icons/OsIcon";
 import { capitalLetter, printLocalMachineName } from "@/utils";
 import { IconCloud, IconCloudOff } from "@tabler/icons-react";
 import { ConnectModal } from "./ConnectModal";
+import useAsyncEffect from "use-async-effect";
 
 export const ServerConfig = () => {
   /**
@@ -59,13 +60,11 @@ export const ServerConfig = () => {
    * Effects
    */
 
-  useEffect(() => {
-    (async () => {
-      await refreshOsInfo();
-      await refreshLocalIps();
-      await recheckBattery();
-      setConnectedTo();
-    })();
+  useAsyncEffect(async () => {
+    await refreshOsInfo();
+    await refreshLocalIps();
+    await recheckBattery();
+    setConnectedTo();
   }, []);
 
   useEffect(() => {

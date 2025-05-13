@@ -27,6 +27,7 @@ import { useEffect } from "react";
 import { Text, Group, Button, Stack, Loader } from "@mantine/core";
 import { IconFileImport, IconRefresh } from "@tabler/icons-react";
 import { FileItem } from "./FileItem";
+import useAsyncEffect from "use-async-effect";
 
 export const FileList = () => {
   /**
@@ -83,10 +84,8 @@ export const FileList = () => {
    * Run once every 2 seconds, and stops when the database is ready
    * This will run at application startup
    */
-  useEffect(() => {
-    (async () => {
-      await checkDatabaseReady();
-    })();
+  useAsyncEffect(async () => {
+    await checkDatabaseReady();
   }, []);
 
   useEffect(() => {
@@ -104,10 +103,8 @@ export const FileList = () => {
     return () => clearInterval(intervalId);
   }, [connectedTo]);
 
-  useEffect(() => {
-    (async () => {
-      await refresh();
-    })();
+  useAsyncEffect(async () => {
+    await refresh();
   }, [connectedTo]);
 
   /**
