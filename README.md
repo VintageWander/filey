@@ -11,7 +11,7 @@ and there but in general the tool has minimal bugs
 
 # Tech used
 
--   Interface: `React` (`TypeScript`)
+-   Interface: `NextJS` (`TypeScript`)
 -   Engine: `Tauri`(webview) + `Axum`(HTTP server) (`Rust`)
 -   Database: `SQLite`
 
@@ -29,7 +29,7 @@ that I have at my disposal
 
 ## Pre-requisites
 
-You need to have [`NodeJS`](https://nodejs.org/en) and [`Rust`](https://www.rust-lang.org/) installed
+You need to have [`Bun`](https://bun.sh/) and [`Rust`](https://www.rust-lang.org/) installed
 
 ## Build
 
