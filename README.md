@@ -39,7 +39,7 @@ the `sqlx` crate
 ### For macOS:
 
 ```bash
-SQLX_OFFLINE=true npx tauri build -- --bundles dmg
+SQLX_OFFLINE=true bun tauri build --bundles dmg
 ```
 
 ### For Android:
@@ -50,7 +50,7 @@ Follow this guide after downloading the source code](https://tauri.app/distribut
 ```bash
 # Somehow the debug build on Android runs all features
 # More explanations in the Cargo.toml file
-SQLX_OFFLINE=true npx tauri android build --apk --target aarch64 --debug
+SQLX_OFFLINE=true bun tauri android build --apk --target aarch64 --debug
 ```
 
 ### For iOS:
@@ -59,7 +59,7 @@ You'll need to sign the application with your Apple Developer account, I've only
 and it runs okay
 
 ```bash
-SQLX_OFFLINE=true npx tauri ios build
+SQLX_OFFLINE=true bun tauri ios build
 ```
 
 ### For Windows:
@@ -69,7 +69,7 @@ Build it on a real Windows machine or a VM
 #### X86_64:
 
 ```bash
-SQLX_OFFLINE=true npx tauri build
+SQLX_OFFLINE=true bun tauri build
 ```
 
 #### ARM64:

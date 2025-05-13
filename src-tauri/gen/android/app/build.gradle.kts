@@ -25,7 +25,6 @@ android {
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
     }
-
     signingConfigs {
         create("release") {
             val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -40,8 +39,10 @@ android {
             storePassword = keystoreProperties["password"] as String
         }
     }
-
     buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+        }
         getByName("debug") {
             manifestPlaceholders["usesCleartextTraffic"] = "true"
             isDebuggable = true
@@ -54,7 +55,12 @@ android {
             }
         }
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            proguardFiles(
+                *fileTree(".") { include("**/*.pro") }
+                    .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
+                    .toList().toTypedArray()
+            )
         }
     }
     kotlinOptions {

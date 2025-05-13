@@ -1,18 +1,18 @@
 {
-  "$schema": "https://schema.tauri.app/config/2",
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Filey",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "identifier": "wander.filey",
   "build": {
-    "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
+    "devUrl": "http://127.0.0.1:3000",
+    "frontendDist": "../out",
+    "beforeDevCommand": "bun run dev",
+    "beforeBuildCommand": "bun run build"
   },
   "app": {
     "windows": [
       {
-        "title": "filey",
+        "title": "Filey",
         "width": 411,
         "height": 710,
         "minWidth": 411,
@@ -20,7 +20,10 @@
         "resizable": true,
         "fullscreen": false
       }
-    ]
+    ],
+    "security": {
+      "csp": null
+    }
   },
   "bundle": {
     "active": true,
